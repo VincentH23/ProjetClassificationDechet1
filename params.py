@@ -1,3 +1,5 @@
+from keras.optimizers import SGD, Adam
+
 # General data parameters
 
 DATASET_PATH = 'dataset-resized'
