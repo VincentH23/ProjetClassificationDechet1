@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import keras
 from keras.preprocessing.image import load_img, smart_resize
 from params import *
-
+import tensorflow as tf
 
 def create_generators(data_path=DATASET_PATH):
     'Returns three generators'
