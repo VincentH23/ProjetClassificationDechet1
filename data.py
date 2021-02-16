@@ -75,8 +75,8 @@ class DataGeneratorClassifier(keras.utils.Sequence):
 
             y[i] = self.classes.index(ID.split('/')[0])
         if self.transform:
-            data_augmentation = tf.keras.Sequential([layers.experimental.preprocessing.RandomFlip("horizontal_and_vertical"),
-            layers.experimental.preprocessing.RandomRotation(0.2)])
+            data_augmentation = tf.keras.Sequential([tf.keras.layers.experimental.preprocessing.RandomFlip("horizontal_and_vertical"),
+            tf.keras.layers.experimental.preprocessing.RandomRotation(0.2)])
             X=data_augmentation(X)
 
         return X,keras.utils.to_categorical(y,num_classes=6)
