@@ -16,8 +16,8 @@ def create_generators(data_path=DATASET_PATH):
     train_list, val_list, test_list = data_split(np.asarray(image_paths))
 
     train_data_generator = DataGeneratorClassifier(train_list, TRAINING_BATCH_SIZE, TRAINING_IMAGE_SIZE)
-    validation_data_generator = DataGeneratorClassifier(val_list, VALIDATION_BATCH_SIZE, VALIDATION_IMAGE_SIZE)
-    test_data_generator = DataGeneratorClassifier(test_list, TESTING_BATCH_SIZE, TESTING_IMAGE_SIZE)
+    validation_data_generator = DataGeneratorClassifier(val_list, VALIDATION_BATCH_SIZE, VALIDATION_IMAGE_SIZE,transform=False)
+    test_data_generator = DataGeneratorClassifier(test_list, TESTING_BATCH_SIZE, TESTING_IMAGE_SIZE,transform=False)
     return train_data_generator, validation_data_generator, test_data_generator
 
 
@@ -32,7 +32,7 @@ def data_split(paths_list):
 
 class DataGeneratorClassifier(keras.utils.Sequence):
     'Generates data for Keras'
-    def __init__(self, list_IDs, batch_size, image_size, data_path=DATASET_PATH, n_channels=NUMBER_OF_CHANNELS, shuffle=SHUFFLE_DATA):
+    def __init__(self, list_IDs, batch_size, image_size, data_path=DATASET_PATH, n_channels=NUMBER_OF_CHANNELS, shuffle=SHUFFLE_DATA,transform=TRANSFORM):
         'Initialisation'
         self.classes = os.listdir(data_path)
         self.image_size = image_size
@@ -42,6 +42,7 @@ class DataGeneratorClassifier(keras.utils.Sequence):
         self.shuffle = shuffle
         self.on_epoch_end()
         self.data_path=data_path
+        self.transform=transform
 
     def __len__(self):
         'Denotes the number of batches per epoch'
@@ -73,9 +74,10 @@ class DataGeneratorClassifier(keras.utils.Sequence):
             X[i,:] = Xi
 
             y[i] = self.classes.index(ID.split('/')[0])
-        
-        data_augmentation = tf.keras.Sequential([layers.experimental.preprocessing.RandomFlip("horizontal_and_vertical"),
-        layers.experimental.preprocessing.RandomRotation(0.2)])
+        if self.transform:
+            data_augmentation = tf.keras.Sequential([layers.experimental.preprocessing.RandomFlip("horizontal_and_vertical"),
+            layers.experimental.preprocessing.RandomRotation(0.2)])
+            X=data_augmentation(X)
 
         return X,keras.utils.to_categorical(y,num_classes=6)
 
