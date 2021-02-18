@@ -4,7 +4,7 @@ from utils import *
 from model import *
 import matplotlib.pyplot as plt
 
-def training(generatorTrain, generatorVal,descenteGrade):
+def training(generatorTrain, generatorVal):
     model=create_model2()
     
     model.compile(

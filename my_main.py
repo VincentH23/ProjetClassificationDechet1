@@ -17,7 +17,7 @@ def main():
     trainGenerator, valGenerator, testGenerator = create_generators()
 
     if args.phase == 'train':
-        model, history = training(trainGenerator, valGenerator, DESCENTEGRAD)
+        model, history = training(trainGenerator, valGenerator)
 
     elif args.phase == 'test':
         
