@@ -1,6 +1,6 @@
 from utils import *
 
-def test(generatorTest,model):
+def testing(generatorTest,model):
 
     loss_and_metrics=model.evaluate(generatorTest, batch_size=TEST_DATASET_SIZE)
     
