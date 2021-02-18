@@ -36,14 +36,10 @@ def training(generatorTrain, generatorVal,descenteGrade):
         # plt.legend()
         # plt.show()
         
-
         
     model.save_weights('./checkpoint')
 
-    # print("Nombre d'opérateurs nécessaires par ligne (base de données d'entraînement)")
-    # print(workforce_needed(generatorTrain, model, phase='train'))
-
-    # print("Nombre d'opérateurs nécessaires par ligne (base de données de validation)")
-    # print(workforce_needed(generatorVal, model, phase='validation'))
+    print("Nombre d'opérateurs nécessaires par ligne (base de données de validation)")
+    print(workforce_needed(generatorVal, model, phase='validation'))
     return model,history
 

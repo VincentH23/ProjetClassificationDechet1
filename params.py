@@ -7,7 +7,7 @@ SHUFFLE_DATA = True
 
 # Data generator parameters
 TRAINING_BATCH_SIZE = 128
-TRAINING_IMAGE_SIZE = (128, 128)
+TRAINING_IMAGE_SIZE = (256, 256)
 VALIDATION_BATCH_SIZE = 324
 VALIDATION_IMAGE_SIZE = TRAINING_IMAGE_SIZE
 VALIDATION_DATASET_SIZE = 324
@@ -21,8 +21,8 @@ TRANSFORM = True
 # Model parameters
 NBNEURONE1 = 128
 NBNEURONE2 = 6
-taux_apprentissage = 0.0004
-NBEPOCH = 1
+taux_apprentissage = 0.001
+NBEPOCH = 250
 descenteGrade = Adam(taux_apprentissage)
 
 # Values for metric
