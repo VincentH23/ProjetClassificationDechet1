@@ -11,7 +11,7 @@ def training(generatorTrain, generatorVal,descenteGrade):
     model.compile(
         loss='categorical_crossentropy', 
         optimizer=descenteGrade, 
-        metrics=['accuracy',Workforce_needed()] # métrique à changer  workforce_needed_create(1879), my_metric_fn
+        metrics=['accuracy'] # métrique à changer  workforce_needed_create(1879), my_metric_fn
 
     )
 
@@ -37,7 +37,7 @@ def training(generatorTrain, generatorVal,descenteGrade):
         # plt.show()
         
         
-    model.save_weights('./checkpoint')
+    model.save('checkpoint')
 
     print("Nombre d'opérateurs nécessaires par ligne (base de données de validation)")
     print(workforce_needed(generatorVal, model, phase='validation'))
