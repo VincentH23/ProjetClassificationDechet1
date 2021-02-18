@@ -7,8 +7,4 @@ def test(generatorTest,model):
     print("Nombre d'opérateurs nécessaires par ligne (base de données de test)")
     print(workforce_needed(generatorTest, model, phase='test'))
 
-    print(loss_and_metrics)
-
-    
-    
 
