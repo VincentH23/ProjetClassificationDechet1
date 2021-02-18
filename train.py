@@ -9,7 +9,7 @@ def training(generatorTrain, generatorVal):
     
     model.compile(
         loss='categorical_crossentropy', 
-        optimizer=descenteGrade, 
+        optimizer=DESCENTEGRAD, 
         metrics=['accuracy'] # métrique à changer  workforce_needed_create(1879), my_metric_fn
 
     )
