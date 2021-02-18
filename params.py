@@ -22,7 +22,7 @@ TRANSFORM = True
 NBNEURONE1 = 128
 NBNEURONE2 = 6
 taux_apprentissage = 0.001
-NBEPOCH = 250
+NBEPOCH = 1
 descenteGrade = Adam(taux_apprentissage)
 
 # Values for metric

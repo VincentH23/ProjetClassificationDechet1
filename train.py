@@ -25,6 +25,30 @@ def training(generatorTrain, generatorVal,descenteGrade):
              
     model.save('checkpoint')
 
+    epochs=range(1,NBEPOCH+1)
+
+    loss_train=history.history["loss"]
+    metrics_train=history.history["accuracy"]
+
+    loss_test=history.history["val_loss"]
+    metrics_test=history.history["val_accuracy"]
+
+    plt.figure()
+    plt.title("loss ")
+    plt.plot(epochs,loss_train,'r+',label="Training loss")
+    plt.plot(epochs,loss_test,'b+',label="Testing loss")
+    plt.legend()
+    plt.xlabel("epochs")
+    plt.show()
+
+    plt.figure()
+    plt.title("accuracy ")
+    plt.plot(epochs,metrics_train,'r+',label="Training accuracy")
+    plt.plot(epochs,metrics_test,'b+',label="Testing accuracy")
+    plt.legend()
+    plt.xlabel("epochs")
+    plt.show()
+
     print("Nombre d'opérateurs nécessaires par ligne (base de données de validation)")
     print(workforce_needed(generatorVal, model, phase='validation'))
     return model,history
