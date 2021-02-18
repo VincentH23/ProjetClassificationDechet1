@@ -24,7 +24,7 @@ def main():
         file_path= "./checkpoint"
         model=tf.keras.models.load_model(file_path)
 
-        test(testGenerator, model)
+        testing(testGenerator, model)
 
     else:
         print("/!\ Unknown phase : type 'train' or 'test'")
