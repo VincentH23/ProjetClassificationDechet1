@@ -38,46 +38,99 @@ def workforce_needed(generator, model, phase='train'):
         dataset_size = VALIDATION_DATASET_SIZE
         batch_size = VALIDATION_BATCH_SIZE
     number_of_batches = dataset_size//batch_size
-    y_true = []
-    y_pred = []
-    for batch_number in range(number_of_batches):
-        images, labels = generator.__getitem__(batch_number)
-        y_true.append(labels)
-        y_pred_to_add = model.predict(images)
-        y_pred.append(y_pred_to_add)
+
+    #Pour initialiser les listes avec les bonnes dimensions
+    images, labels = generator[0]
+    y_true = labels
+    y_pred = model.predict(images)
+    
+
     y_true = np.array(y_true)
+    y_true = np.argmax(y_true, axis=1)
     y_pred = np.array(y_pred)
+    y_pred = np.argmax(y_pred, axis=1)
+    nombre_dechets_mal_tries = []
+    for i in range(6):
+        y_ligne=y_pred==i
+        dechet_maltriée=y_true[y_ligne]!=i
+        nombre_dechets_mal_tries.append(np.sum(dechet_maltriée))
+        
 
     nombre_dechets = y_true.shape[0]
     rapport_temps = nombre_dechets / 2527
     work_per_person = WORK_PER_PERSON_FOR_TWENTY_MINS * rapport_temps
-    nombre_dechets_mal_tries = [0 for i in range(6)]
-    for j in range(nombre_dechets):
-        if (y_true[j] != y_pred[j]).all() :
-            numero_ligne = 0
-            for i in range(6):
-                numero_ligne += y_pred[j][i]*i
-            nombre_dechets_mal_tries[int(numero_ligne)] += 1
     workforce = [nombre_dechets_mal_tries[i]/work_per_person for i in range(6)]
     return workforce
 
 
-def workforce_needed_create(dataset_size) :  # return a function
-    def  workforce_needed(y_true,y_pred):   #y_true shape =(1,6)  
-        work = [0 for i in range(6)]
-        # y_pred_decision = tf.argmax(y_pred)
-        # y_true_decision = tf.argmax(y_true)
-        # if y_true_decision != y_pred_decision :
-        #   work[int(y_pred_decision.numpy())] = 1
-        return [1, 0]
-    return workforce_needed
 
-def my_metric_fn(y_true, y_pred):
-  y_true_dec = tf.argmax(y_true,1)
-  y_pred_dec = tf.argmax(y_pred,1)
-  a = (y_pred_dec != y_true_dec) and (y_pred_dec == 0)
-  return a
+class Workforce_needed(tf.keras.metrics.Metric):
+
+    def __init__(self,name='workforce',**kwargs):
+        super(Workforce_needed, self).__init__(name=name,**kwargs)
+        self.counter=self.add_weight(name='counter',initializer='zeros') #nb de dechets visualises au total
+        self.nombre_dechets_mal_tries=[self.add_weight(name='nb_mal_triés_ligne_'+str(i), initializer='zeros') for i in range(6)]
+        self.workforce=self.add_weight(name='workforce',initializer='zeros')
     
+        print('sas30')
+
+    
+    def update_state(self, y_true, y_pred,sample_weight=None):
+        self.counter.assign_add(tf.reduce_sum(y_true))
+        for i in range (6):
+            a=tf.argmax(y_true[tf.argmax(y_pred,1)==i],1)!=i
+            a=tf.cast(a,tf.float32)
+            self.nombre_dechets_mal_tries[i].assign_add(tf.reduce_sum(a))
+    
+
+        
+    def result(self):
+        rapport_temps = self.counter / 2527
+        work_per_person = WORK_PER_PERSON_FOR_TWENTY_MINS * rapport_temps
+        
+        for i in range(6):
+            self.workforce.assign_add(tf.math.ceil(self.nombre_dechets_mal_tries[i]/work_per_person))
+
+        return self.workforce
+
+    def reset_states(self):
+        for i in range (6):
+            self.nombre_dechets_mal_tries[i].assign(0)
+        self.workforce.assign(0)
+        self.counter.assign(0)
         
 
+class Workforce_needed2(tf.keras.metrics.Metric):
 
+    def __init__(self,name='workforce',**kwargs):
+        super(Workforce_needed, self).__init__(name=name,**kwargs)
+        self.counter=self.add_weight(name='counter',initializer='zeros') #nb de dechets visualises au total
+        # self.nombre_dechets_mal_tries=[self.add_weight(name='nb_mal_triés_ligne_'+str(i), initializer='zeros') for i in range(6)]
+        # self.workforce=self.add_weight(name='workforce',initializer='zeros')
+    
+        print('sas30')
+
+    
+    def update_state(self, y_true, y_pred,sample_weight=None):
+        self.counter.assign_add(tf.reduce_sum(y_true))
+        
+        a=tf.argmax(y_true[tf.argmax(y_pred,1)==i],1)==4
+        a=tf.cast(a,tf.float32)
+        self.counter.assign_add(tf.reduce_sum(a))
+    
+
+        
+    def result(self):
+        # rapport_temps = self.counter / 2527
+        # work_per_person = WORK_PER_PERSON_FOR_TWENTY_MINS * rapport_temps
+        
+        # for i in range(6):
+        #     self.workforce.assign_add(tf.math.ceil(self.nombre_dechets_mal_tries[i]/work_per_person))
+
+        return self.counter
+
+    def reset_states(self):
+        # for i in range (6):
+        #     self.nombre_dechets_mal_tries[i].assign(0)
+        # self.workforce.assign(0)
+        self.counter.assign(0)

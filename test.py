@@ -1,6 +1,14 @@
-def test(X_test,Y_test,model):
+from utils import *
 
-    loss_and_metrics=model.evaluate(X_test, Y_test, batch_size=128)
+def test(generatorTest,model):
+
+    loss_and_metrics=model.evaluate(generatorTest, batch_size=TEST_DATASET_SIZE)
     
+    print("Nombre d'opérateurs nécessaires par ligne (base de données de test)")
+    print(workforce_needed(generatorTest, model, phase='test'))
+
     print(loss_and_metrics)
+
+    
+    
 

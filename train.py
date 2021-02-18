@@ -5,13 +5,18 @@ from model import *
 import matplotlib.pyplot as plt
 
 def training(generatorTrain, generatorVal,descenteGrade):
-    model=create_model()
+    print('\n\nsa4\n\n')
+    model=create_model2()
     
     model.compile(
         loss='categorical_crossentropy', 
         optimizer=descenteGrade, 
-        metrics=['accuracy'] # métrique à changer  workforce_needed_create(1879), my_metric_fn
+        metrics=['accuracy',Workforce_needed()] # métrique à changer  workforce_needed_create(1879), my_metric_fn
 
+    )
+
+    model.evaluate_generator(
+        generatorVal
     )
     # metric_train = []
     # metric_validation = []
@@ -34,5 +39,11 @@ def training(generatorTrain, generatorVal,descenteGrade):
 
         
     model.save_weights('./checkpoint')
+
+    # print("Nombre d'opérateurs nécessaires par ligne (base de données d'entraînement)")
+    # print(workforce_needed(generatorTrain, model, phase='train'))
+
+    # print("Nombre d'opérateurs nécessaires par ligne (base de données de validation)")
+    # print(workforce_needed(generatorVal, model, phase='validation'))
     return model,history
 
